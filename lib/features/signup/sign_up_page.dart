@@ -1,5 +1,7 @@
 import 'package:financy_app/common/constants/app_colors.dart';
 import 'package:financy_app/common/constants/app_text_styles.dart';
+import 'package:financy_app/common/widgets/custom_text_form_field.dart';
+import 'package:financy_app/common/widgets/password_form_field.dart';
 import 'package:financy_app/common/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +16,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureTextPassword = true; // Campo de estado para controlar a visibilidade da senha
   bool _obscureTextConfirmPassword = true; // Campo de estado para controlar a visibilidade da confirmação de senha
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +51,7 @@ class _SignUpPageState extends State<SignUpPage> {
               key: _formKey,
               child: Column(
                 children: [
-                  _buildTextFormField(
+                  CustomTextFormField(
                     labelText: 'Name',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -57,7 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                   ),
                   const SizedBox(height: 16.0),
-                  _buildTextFormField(
+                  CustomTextFormField(
                     labelText: 'Email',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -69,7 +73,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                   ),
                   const SizedBox(height: 16.0),
-                  _buildTextFormField(
+                  PasswordFormField(
+                    controller: _passwordController,
                     labelText: 'Password',
                     obscureText: _obscureTextPassword,
                     toggleVisibility: () {
@@ -85,7 +90,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                   ),
                   const SizedBox(height: 16.0),
-                  _buildTextFormField(
+                  PasswordFormField(
+                    controller: _confirmPasswordController,
                     labelText: 'Confirm Password',
                     obscureText: _obscureTextConfirmPassword,
                     toggleVisibility: () {
@@ -96,6 +102,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     validator: (value) {
                       if (value == null || value.length < 6) {
                         return 'Password must be at least 6 characters long';
+                      }else if (value != _passwordController.text) {
+                        return 'Passwords do not match';
                       }
                       return null;
                     },
@@ -105,53 +113,19 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
           ),
           const SizedBox(height: 16.0),
-           Padding(
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
             child: PrimaryButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>  SignUpPage(),
-                  ),
-                );
+                if (_formKey.currentState!.validate()) {
+                  
+                }
               },
               text: 'Sign Up',
             ),
           ),
         ],
       ),
-      
-    );
-  }
-
-  Widget _buildTextFormField({
-    required String labelText,
-    bool obscureText = false,
-    required String? Function(String?) validator,
-    VoidCallback? toggleVisibility,
-  }) {
-    return TextFormField(
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        suffixIcon: toggleVisibility != null
-            ? InkWell(
-                onTap: toggleVisibility,
-                child: Icon(
-                  obscureText ? Icons.visibility : Icons.visibility_off,
-                  color: AppColors.secondaryColor,
-                ),
-              )
-            : null,
-        labelText: labelText,
-        hintStyle: AppTextStyles.smallText.copyWith(
-          color: AppColors.secondaryColor,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-      ),
-      validator: validator,
     );
   }
 }

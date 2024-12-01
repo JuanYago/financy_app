@@ -28,7 +28,7 @@ class PasswordFormField extends StatefulWidget {
     this.focusNode,
     this.onTap,
     this.onTapOutside,
-    this.onEditingComplete,
+    this.onEditingComplete, required Null Function() toggleVisibility, required bool obscureText,
   });
 
   @override
@@ -41,6 +41,7 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
   @override
   Widget build(BuildContext context) {
     return CustomTextFormField(
+      
       onTap: widget.onTap,
       onEditingComplete: widget.onEditingComplete ??
           () {
